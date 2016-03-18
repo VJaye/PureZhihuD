@@ -6,10 +6,13 @@
 软件采用RxJava + Retrofit + OkHttp框架实现，遵循Material Design，界面很简单，只有一个列表和详情界面，对于页面加载及错误等都做了处理，可以做为自己以后开发的一个模板。
 ## 二、软件截图
 ![首页列表](/screenshot/screenshot1.png)
+首页列表
 
 ![列表刷新](/screenshot/screenshot2.png)
+首页列表刷新
 
 ![日报详情](/screenshot/screenshot3.png)
+内容详情
 
 ## 三、依赖库
 * [RxJava 响应式编程框架](https://github.com/ReactiveX/RxJava)
