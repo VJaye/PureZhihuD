@@ -36,6 +36,8 @@ public class NewsDetailFragment extends BaseFragment {
 
     @Bind(R.id.iv_header)
     ImageView mIvHeader;
+    @Bind(R.id.tv_title)
+    TextView mTvTitle;
     @Bind(R.id.tv_source)
     TextView mTvSource;
     @Bind(R.id.toolbar)
@@ -82,6 +84,7 @@ public class NewsDetailFragment extends BaseFragment {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        mCollapsingToolbarLayout.setTitleEnabled(false);
     }
 
     private void loadData() {
@@ -105,6 +108,7 @@ public class NewsDetailFragment extends BaseFragment {
                             Glide.with(getActivity())
                                     .load(newsDetail.getImage())
                                     .into(mIvHeader);
+                            mTvTitle.setText(newsDetail.getTitle());
                             mTvSource.setText(newsDetail.getImage_source());
                             String htmlData = HtmlUtil.createHtmlData(newsDetail);
                             mWvNews.loadData(htmlData, HtmlUtil.MIME_TYPE, HtmlUtil.ENCODING);

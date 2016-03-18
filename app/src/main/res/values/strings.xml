@@ -4,4 +4,7 @@
     <string name="load_fail">加载失败，请重试</string>
     <string name="load_more_fail">加载更多失败，请重试</string>
     <string name="refresh">刷新</string>
+
+    <string name="test_title">新闻标题新闻标题新闻标题新闻标题新闻标题新闻标题，不忘初心，方得始终</string>
+    <string name="test_source">图片来源</string>
 </resources>
