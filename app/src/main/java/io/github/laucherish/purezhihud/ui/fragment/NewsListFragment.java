@@ -157,6 +157,12 @@ public class NewsListFragment extends BaseFragment implements PullToRefreshView.
         RetrofitManager.builder().getBeforeNews(date)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<NewsList, NewsList>() {
+                    @Override
+                    public NewsList call(NewsList newsList) {
+                        return changeReadState(newsList);
+                    }
+                })
                 .subscribe(new Action1<NewsList>() {
                     @Override
                     public void call(NewsList newsList) {
