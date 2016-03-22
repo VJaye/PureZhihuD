@@ -4,10 +4,6 @@ import java.util.List;
 
 import io.github.laucherish.purezhihud.bean.NewsDetail;
 
-/**
- * @author lsxiao
- * @date 2015-11-05 10:45
- */
 public class HtmlUtil {
     //css样式,隐藏header
     private static final String HIDE_HEADER_STYLE = "<style>div.headline{display:none;}</style>";
