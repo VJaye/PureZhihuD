@@ -26,6 +26,7 @@ import io.github.laucherish.purezhihud.network.manager.RetrofitManager;
 import io.github.laucherish.purezhihud.ui.adapter.AutoLoadOnScrollListener;
 import io.github.laucherish.purezhihud.ui.adapter.NewsListAdapter;
 import io.github.laucherish.purezhihud.utils.L;
+import io.github.laucherish.purezhihud.utils.NetUtil;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
@@ -93,19 +94,19 @@ public class NewsListFragment extends BaseFragment implements PullToRefreshView.
         mRcvNewsList.addOnScrollListener(mAutoLoadListener);
 
         mLoadLatestSnackbar = Snackbar.make(mRcvNewsList, R.string.load_fail, Snackbar.LENGTH_INDEFINITE)
-                                    .setAction(R.string.refresh, new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            loadLatestNews();
-                                        }
-                                    });
+                .setAction(R.string.refresh, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        loadLatestNews();
+                    }
+                });
         mLoadBeforeSnackbar = Snackbar.make(mRcvNewsList, R.string.load_more_fail, Snackbar.LENGTH_INDEFINITE)
-                                    .setAction(R.string.refresh, new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            loadBeforeNews(curDate);
-                                        }
-                                    });
+                .setAction(R.string.refresh, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        loadBeforeNews(curDate);
+                    }
+                });
     }
 
     private void loadLatestNews() {
@@ -121,6 +122,7 @@ public class NewsListFragment extends BaseFragment implements PullToRefreshView.
                 .map(new Func1<NewsList, NewsList>() {
                     @Override
                     public NewsList call(NewsList newsList) {
+                        cacheAllDetail(newsList.getStories());
                         return changeReadState(newsList);
                     }
                 })
@@ -160,6 +162,7 @@ public class NewsListFragment extends BaseFragment implements PullToRefreshView.
                 .map(new Func1<NewsList, NewsList>() {
                     @Override
                     public NewsList call(NewsList newsList) {
+                        cacheAllDetail(newsList.getStories());
                         return changeReadState(newsList);
                     }
                 })
@@ -192,6 +195,21 @@ public class NewsListFragment extends BaseFragment implements PullToRefreshView.
             }
         }
         return newsList;
+    }
+
+    public void cacheAllDetail(List<News> newsList) {
+        if (NetUtil.isWifiConnected()) {
+            for (News news : newsList) {
+                L.d("Cache news: " + news.getId() + news.getTitle());
+                cacheNewsDetail(news.getId());
+            }
+        }
+    }
+
+    public void cacheNewsDetail(int newsId) {
+        RetrofitManager.builder().getNewsDetail(newsId)
+                .subscribeOn(Schedulers.io())
+                .subscribe();
     }
 
     @Override
