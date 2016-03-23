@@ -3,7 +3,7 @@
 
 下载地址
 
-本地下载<Br>https://github.com/laucherish/PureZhihuD/releases/download/v1.0/app-release1.0.apk</Br>
+本地下载<Br>https://github.com/laucherish/PureZhihuD/releases/download/v1.1/app-release.apk</Br>
 
 fir.im<Br>http://fir.im/dy4m</Br>
 
