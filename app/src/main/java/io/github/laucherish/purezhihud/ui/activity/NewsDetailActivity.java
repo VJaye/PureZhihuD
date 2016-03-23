@@ -33,6 +33,7 @@ public class NewsDetailActivity extends BaseActivity {
 
     @Override
     protected void afterCreate(Bundle savedInstanceState) {
+        mSwipeBackLayout.setEdgeDp(360);
         News news = getIntent().getParcelableExtra(KEY_NEWS);
         showNewsDetailFragment(news);
     }

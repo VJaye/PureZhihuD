@@ -8,10 +8,16 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import com.yalantis.phoenix.PullToRefreshView;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +26,7 @@ import butterknife.Bind;
 import io.github.laucherish.purezhihud.R;
 import io.github.laucherish.purezhihud.base.BaseFragment;
 import io.github.laucherish.purezhihud.bean.News;
+import io.github.laucherish.purezhihud.bean.NewsDetail;
 import io.github.laucherish.purezhihud.bean.NewsList;
 import io.github.laucherish.purezhihud.db.dao.NewDao;
 import io.github.laucherish.purezhihud.network.manager.RetrofitManager;
@@ -141,6 +148,9 @@ public class NewsListFragment extends BaseFragment implements PullToRefreshView.
                         }
                         mTvLoadError.setVisibility(View.GONE);
                         mLoadLatestSnackbar.dismiss();
+                        if (newsList.getStories().size() < 8) {
+                            loadBeforeNews(curDate);
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -197,7 +207,7 @@ public class NewsListFragment extends BaseFragment implements PullToRefreshView.
         return newsList;
     }
 
-    public void cacheAllDetail(List<News> newsList) {
+    private void cacheAllDetail(List<News> newsList) {
         if (NetUtil.isWifiConnected()) {
             for (News news : newsList) {
                 L.d("Cache news: " + news.getId() + news.getTitle());
@@ -206,10 +216,41 @@ public class NewsListFragment extends BaseFragment implements PullToRefreshView.
         }
     }
 
-    public void cacheNewsDetail(int newsId) {
+    private void cacheNewsDetail(int newsId) {
         RetrofitManager.builder().getNewsDetail(newsId)
                 .subscribeOn(Schedulers.io())
-                .subscribe();
+                .observeOn(Schedulers.io())
+                .subscribe(new Action1<NewsDetail>() {
+                    @Override
+                    public void call(NewsDetail newsDetail) {
+                        ArrayList<String> imgList = getImgs(newsDetail.getBody());
+                        for (String img : imgList) {
+                            L.d("Cache img: " + img);
+                        }
+                    }
+                });
+    }
+
+    private ArrayList<String> getImgs(String html) {
+
+        ArrayList<String> imgList = new ArrayList<>();
+
+        Document doc = Jsoup.parse(html);
+        Elements es = doc.getElementsByTag("img");
+
+        for (Element e : es) {
+            String src = e.attr("src");
+
+            String newImgUrl = src.replaceAll("\"", "");
+            newImgUrl = newImgUrl.replace('\\', ' ');
+            newImgUrl = newImgUrl.replaceAll(" ", "");
+
+            if (!TextUtils.isEmpty(newImgUrl)) {
+                imgList.add(newImgUrl);
+            }
+        }
+
+        return imgList;
     }
 
     @Override

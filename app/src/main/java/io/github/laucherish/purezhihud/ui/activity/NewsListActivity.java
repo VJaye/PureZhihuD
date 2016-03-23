@@ -17,6 +17,7 @@ public class NewsListActivity extends BaseActivity {
 
     @Override
     protected void afterCreate(Bundle savedInstanceState) {
+        mSwipeBackLayout.setEdgeDp(20);
         Fragment fragment = NewsListFragment.newInstance();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fl_container,fragment,NewsListFragment.TAG);
