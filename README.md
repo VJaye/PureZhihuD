@@ -23,28 +23,24 @@ fir.im<Br>http://fir.im/dy4m</Br>
 
 为什么不自己做一个呢？于是就有了纯净知乎日报。
 
-软件采用RxJava + Retrofit + OkHttp框架实现，遵循Material Design，界面简单干净，自动缓存，运行速度快且节省流量，对于页面加载及错误等都做了处理，可以作为自己以后开发的一个模板。
+软件采用RxJava + Retrofit + OkHttp框架实现，遵循Material Design，界面简单干净，运行速度快，自动离线缓存，节省流量，对于页面加载及错误等都做了处理，可以作为自己以后开发的一个模板。
 ## 二、软件截图
 
 * 首页列表界面
 
 ![首页列表](/screenshot/screenshot1.png)
 
-* 首页列表刷新界面
-
-![列表刷新](/screenshot/screenshot2.png)
-
 * 内容详情界面
 
-![日报详情](/screenshot/screenshot3.png)
+![日报详情](/screenshot/screenshot2.png)
 
 * 滑动返回
 
-![滑动返回](/screenshot/screenshot4.png)
+![滑动返回](/screenshot/screenshot3.png)
 
 * 关于界面
 
-![关于界面](/screenshot/screenshot5.png)
+![关于界面](/screenshot/screenshot4.png)
 
 
 ## 三、依赖库
