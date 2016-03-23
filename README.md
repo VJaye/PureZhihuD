@@ -42,6 +42,10 @@ fir.im<Br>http://fir.im/dy4m</Br>
 
 ![滑动返回](/screenshot/screenshot4.png)
 
+* 关于界面
+
+![关于界面](/screenshot/screenshot5.png)
+
 
 ## 三、依赖库
 * [RxJava 响应式编程框架](https://github.com/ReactiveX/RxJava)
