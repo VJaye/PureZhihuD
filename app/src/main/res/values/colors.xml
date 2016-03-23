@@ -7,4 +7,8 @@
     <color name="color_read">#9E9E9E</color>
     <color name="color_unread">#000000</color>
     <color name="color_source">#A1FFFFFF</color>
+
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#727272</color>
+    <color name="divider">#B6B6B6</color>
 </resources>
