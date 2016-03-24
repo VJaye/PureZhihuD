@@ -2,7 +2,7 @@
 最纯净的知乎日报客户端。运行快，无广告，无社交，省流量。
 
 下载地址
-![扫码下载](/screenshot/purezhihudcode.png)
+![扫码下载](/screenshot/purezhihudcode.jpg)
 <Br>http://shouji.baidu.com/soft/item?docid=9101497</Br>
 
 ## 实现的功能
