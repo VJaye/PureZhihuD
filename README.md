@@ -2,10 +2,7 @@
 最纯净的知乎日报客户端。运行快，无广告，无社交，省流量。
 
 下载地址
-
-本地下载<Br>https://github.com/laucherish/PureZhihuD/releases/download/v1.1/app-release.apk</Br>
-
-fir.im<Br>http://fir.im/dy4m</Br>
+<Br>http://fir.im/dy4m</Br>
 
 ## 实现的功能
 已完成
