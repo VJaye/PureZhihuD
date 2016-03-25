@@ -1,6 +1,7 @@
 package io.github.laucherish.purezhihud.ui.fragment;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.widget.ContentLoadingProgressBar;
@@ -8,6 +9,9 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.ImageView;
@@ -21,6 +25,7 @@ import io.github.laucherish.purezhihud.base.BaseFragment;
 import io.github.laucherish.purezhihud.bean.News;
 import io.github.laucherish.purezhihud.bean.NewsDetail;
 import io.github.laucherish.purezhihud.network.manager.RetrofitManager;
+import io.github.laucherish.purezhihud.ui.activity.AboutActivity;
 import io.github.laucherish.purezhihud.ui.activity.NewsDetailActivity;
 import io.github.laucherish.purezhihud.utils.HtmlUtil;
 import io.github.laucherish.purezhihud.utils.L;
@@ -65,6 +70,7 @@ public class NewsDetailFragment extends BaseFragment {
     @Override
     protected void afterCreate(Bundle savedInstanceState) {
         mNews = getArguments().getParcelable(NewsDetailActivity.KEY_NEWS);
+        setHasOptionsMenu(true);
         init();
         loadData();
     }
@@ -75,6 +81,29 @@ public class NewsDetailFragment extends BaseFragment {
         Fragment fragment = new NewsDetailFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_detail,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                getActivity().onBackPressed();
+                return true;
+            case R.id.menu_action_share:
+                share();
+                return true;
+            case R.id.menu_action_about:
+                AboutActivity.start(getActivity());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void init() {
@@ -133,6 +162,14 @@ public class NewsDetailFragment extends BaseFragment {
 
     public void hideProgress() {
         mPbLoading.setVisibility(View.GONE);
+    }
+
+    private void share() {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.share));
+        intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_from) + mNews.getTitle() + "，http://daily.zhihu.com/story/" + mNews.getId());
+        startActivity(Intent.createChooser(intent, mNews.getTitle()));
     }
 
 }

@@ -7,6 +7,8 @@
 
     <string name="test_title">新闻标题新闻标题新闻标题新闻标题新闻标题新闻标题，不忘初心，方得始终</string>
     <string name="test_source">图片来源</string>
+    <string name="share">分享</string>
+    <string name="share_from">来自「纯净日报」的分享：</string>
 
     <string name="about_introduce">「纯净日报」- 给您最纯粹的阅读体验。\n\n开源是必须的，软件采用RxJava + Retrofit + OkHttp框架实现，喜欢的朋友请Star，欢迎一起学习讨论。\n\n你的支持将是我最大的动力与褒奖！</string>
     <string name="about_menu_action_share">分享</string>

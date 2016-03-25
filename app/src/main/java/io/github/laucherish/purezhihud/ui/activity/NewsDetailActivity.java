@@ -6,7 +6,6 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 
 import io.github.laucherish.purezhihud.R;
 import io.github.laucherish.purezhihud.base.BaseActivity;
@@ -46,13 +45,4 @@ public class NewsDetailActivity extends BaseActivity {
         transaction.commit();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }
