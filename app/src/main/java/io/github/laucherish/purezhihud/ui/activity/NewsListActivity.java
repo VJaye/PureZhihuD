@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.umeng.analytics.MobclickAgent;
+
 import io.github.laucherish.purezhihud.R;
 import io.github.laucherish.purezhihud.base.BaseActivity;
 import io.github.laucherish.purezhihud.ui.fragment.NewsListFragment;
@@ -42,5 +44,17 @@ public class NewsListActivity extends BaseActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 }

@@ -8,16 +8,10 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import com.yalantis.phoenix.PullToRefreshView;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -198,6 +192,7 @@ public class NewsListFragment extends BaseFragment implements PullToRefreshView.
     public NewsList changeReadState(NewsList newsList) {
         List<String> allReadId = new NewDao(getActivity()).getAllReadNew();
         for (News news : newsList.getStories()) {
+            news.setDate(newsList.getDate());
             for (String readId : allReadId) {
                 if (readId.equals(news.getId() + "")) {
                     news.setRead(true);
@@ -223,35 +218,38 @@ public class NewsListFragment extends BaseFragment implements PullToRefreshView.
                 .subscribe(new Action1<NewsDetail>() {
                     @Override
                     public void call(NewsDetail newsDetail) {
-                        ArrayList<String> imgList = getImgs(newsDetail.getBody());
-                        for (String img : imgList) {
-                            L.d("Cache img: " + img);
-                        }
+//                        ArrayList<String> imgList = getImgs(newsDetail.getBody());
+//                        for (String img : imgList) {
+//                            L.d("Cache img: " + img);
+//                        }
                     }
                 });
     }
 
-    private ArrayList<String> getImgs(String html) {
-
-        ArrayList<String> imgList = new ArrayList<>();
-
-        Document doc = Jsoup.parse(html);
-        Elements es = doc.getElementsByTag("img");
-
-        for (Element e : es) {
-            String src = e.attr("src");
-
-            String newImgUrl = src.replaceAll("\"", "");
-            newImgUrl = newImgUrl.replace('\\', ' ');
-            newImgUrl = newImgUrl.replaceAll(" ", "");
-
-            if (!TextUtils.isEmpty(newImgUrl)) {
-                imgList.add(newImgUrl);
-            }
-        }
-
-        return imgList;
-    }
+    /**
+     * 获取NewsDetail里面的图片url
+     */
+//    private ArrayList<String> getImgs(String html) {
+//
+//        ArrayList<String> imgList = new ArrayList<>();
+//
+//        Document doc = Jsoup.parse(html);
+//        Elements es = doc.getElementsByTag("img");
+//
+//        for (Element e : es) {
+//            String src = e.attr("src");
+//
+//            String newImgUrl = src.replaceAll("\"", "");
+//            newImgUrl = newImgUrl.replace('\\', ' ');
+//            newImgUrl = newImgUrl.replaceAll(" ", "");
+//
+//            if (!TextUtils.isEmpty(newImgUrl)) {
+//                imgList.add(newImgUrl);
+//            }
+//        }
+//
+//        return imgList;
+//    }
 
     @Override
     public void onRefresh() {

@@ -15,6 +15,15 @@ public class News implements Parcelable {
     private String title;
     private List<String> images;
     private boolean isRead = false;
+    private String date;
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public int getType() {
         return type;

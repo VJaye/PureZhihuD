@@ -17,15 +17,20 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.github.laucherish.purezhihud.App;
 import io.github.laucherish.purezhihud.R;
 import io.github.laucherish.purezhihud.bean.News;
 import io.github.laucherish.purezhihud.db.dao.NewDao;
 import io.github.laucherish.purezhihud.ui.activity.NewsDetailActivity;
+import io.github.laucherish.purezhihud.utils.DateUtil;
 
 /**
  * Created by laucherish on 16/3/16.
  */
 public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsViewHolder> {
+
+    private static final int ITEM_NEWS = 0;
+    private static final int ITEM_NEWS_DATE = 1;
 
     private Context mContext;
     private List<News> mNewsList;
@@ -39,9 +44,25 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
     }
 
     @Override
+    public int getItemViewType(int position) {
+        if (position == 0) {
+            return ITEM_NEWS_DATE;
+        }
+        String currentDate = mNewsList.get(position).getDate();
+        int preIndex = position - 1;
+        boolean isDifferent = !mNewsList.get(preIndex).getDate().equals(currentDate);
+        return isDifferent ? ITEM_NEWS_DATE : ITEM_NEWS;
+    }
+
+    @Override
     public NewsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_news_list, parent, false);
-        return new NewsViewHolder(view);
+        if (viewType == ITEM_NEWS) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_news_list, parent, false);
+            return new NewsViewHolder(view);
+        } else {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_news_list_date, parent, false);
+            return new NewsDateViewHolder(view);
+        }
     }
 
     @Override
@@ -50,6 +71,22 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
         if (news == null) {
             return;
         }
+        if (holder instanceof NewsDateViewHolder) {
+            bindViewHolder(holder, position, news);
+            NewsDateViewHolder dateHolder = (NewsDateViewHolder) holder;
+            String dateFormat = null;
+            if (position == 0) {
+                dateFormat = App.getContext().getString(R.string.date_today);
+            } else {
+                dateFormat = DateUtil.formatDate(news.getDate());
+            }
+            dateHolder.mTvNewsDate.setText(dateFormat);
+        } else {
+            bindViewHolder(holder, position, news);
+        }
+    }
+
+    private void bindViewHolder(final NewsViewHolder holder, int position, final News news) {
         holder.mTvTitle.setText(news.getTitle());
         List<String> images = news.getImages();
         if (images != null && images.size() > 0) {
@@ -69,7 +106,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            newDao.insertReadNew(news.getId()+"");
+                            newDao.insertReadNew(news.getId() + "");
                         }
                     }).start();
                 }
@@ -126,6 +163,16 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
         TextView mTvTitle;
 
         public NewsViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
+    class NewsDateViewHolder extends NewsViewHolder {
+        @Bind(R.id.tv_news_date)
+        TextView mTvNewsDate;
+
+        public NewsDateViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

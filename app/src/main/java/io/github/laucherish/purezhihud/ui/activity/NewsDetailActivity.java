@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.umeng.analytics.MobclickAgent;
+
 import io.github.laucherish.purezhihud.R;
 import io.github.laucherish.purezhihud.base.BaseActivity;
 import io.github.laucherish.purezhihud.bean.News;
@@ -32,7 +34,7 @@ public class NewsDetailActivity extends BaseActivity {
 
     @Override
     protected void afterCreate(Bundle savedInstanceState) {
-        mSwipeBackLayout.setEdgeDp(360);
+        mSwipeBackLayout.setEdgeDp(120); //设置滑动返回触发范围
         News news = getIntent().getParcelableExtra(KEY_NEWS);
         showNewsDetailFragment(news);
     }
@@ -45,4 +47,15 @@ public class NewsDetailActivity extends BaseActivity {
         transaction.commit();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
 }

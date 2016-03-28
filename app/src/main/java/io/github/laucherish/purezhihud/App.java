@@ -16,9 +16,9 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        mApplicationContext = this;
         AppContextUtil.init(this);
         L.init();
-        mApplicationContext = this;
     }
 
     // 获取ApplicationContext

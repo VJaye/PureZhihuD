@@ -113,7 +113,7 @@ public class NewsDetailFragment extends BaseFragment {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        mCollapsingToolbarLayout.setTitleEnabled(false);
+        mCollapsingToolbarLayout.setTitleEnabled(true);
     }
 
     private void loadData() {

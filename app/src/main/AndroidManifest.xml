@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.github.laucherish.purezhihud">
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".App"
@@ -19,8 +22,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.NewsDetailActivity"/>
-        <activity android:name=".ui.activity.AboutActivity"/>
+        <activity android:name=".ui.activity.NewsDetailActivity" />
+        <activity android:name=".ui.activity.AboutActivity" />
+
+        <!--umeng-->
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="56f38a8fe0f55a42fa001ca2"></meta-data>
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="Baidu" />
+
     </application>
 
 </manifest>

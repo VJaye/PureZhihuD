@@ -1,7 +1,5 @@
 package io.github.laucherish.purezhihud.network.manager;
 
-import com.facebook.stetho.okhttp3.StethoInterceptor;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -77,7 +75,6 @@ public class RetrofitManager {
                             .addInterceptor(mRewriteCacheControlInterceptor)
                             .addNetworkInterceptor(mRewriteCacheControlInterceptor)
                             .addInterceptor(interceptor)
-                            .addNetworkInterceptor(new StethoInterceptor())
                             .retryOnConnectionFailure(true)
                             .connectTimeout(15, TimeUnit.SECONDS)
                             .build();
