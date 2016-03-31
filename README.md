@@ -7,7 +7,7 @@
 ><Br>http://www.coolapk.com/apk/io.github.laucherish.purezhihud</Br>
 
 >百度
-><Br>http://shouji.baidu.com/soft/item?docid=9111891</Br>
+><Br>http://shouji.baidu.com/soft/item?docid=9159620</Br>
 
 >豌豆荚
 ><Br>http://www.wandoujia.com/apps/io.github.laucherish.purezhihud</Br>
