@@ -39,6 +39,10 @@ import rx.schedulers.Schedulers;
  */
 public class NewsListFragment extends BaseFragment implements PullToRefreshView.OnRefreshListener {
 
+    public static final String EXTRA_POSITION = "position";
+    public static final String EXTRA_SCROLL = "scroll";
+    public static final String EXTRA_CURDATE = "curdate";
+
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
     @Bind(R.id.tv_load_empty)
@@ -52,11 +56,21 @@ public class NewsListFragment extends BaseFragment implements PullToRefreshView.
     @Bind(R.id.ptr_news_list)
     PullToRefreshView mPtrNewsList;
 
+    public NewsListAdapter mExtraAdapter;
     private NewsListAdapter mNewsListAdapter;
     private String curDate;
     private AutoLoadOnScrollListener mAutoLoadListener;
     private Snackbar mLoadLatestSnackbar;
     private Snackbar mLoadBeforeSnackbar;
+    private OnRecyclerViewCreated mOnRecyclerViewCreated;
+    private LinearLayoutManager mLinearLayoutManager;
+    private List<News> mNewsList;
+
+    private boolean move = false;
+    //记录顶部显示的项
+    private int position = 0;
+    //记录顶部项的偏移
+    private int scroll = 0;
 
     @Override
     protected int getLayoutId() {
@@ -65,12 +79,24 @@ public class NewsListFragment extends BaseFragment implements PullToRefreshView.
 
     @Override
     protected void afterCreate(Bundle savedInstanceState) {
+        position = getArguments().getInt(EXTRA_POSITION);
+        scroll = getArguments().getInt(EXTRA_SCROLL);
+        curDate = getArguments().getString(EXTRA_CURDATE);
         init();
-        loadLatestNews();
+        if (mNewsListAdapter.getmNewsList().size() == 0) {
+            loadLatestNews();
+        }
     }
 
-    public static NewsListFragment newInstance() {
-        return new NewsListFragment();
+    public static NewsListFragment newInstance(int position, int scroll, NewsListAdapter adapter, String curDate) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(EXTRA_POSITION, position);
+        bundle.putInt(EXTRA_SCROLL, scroll);
+        bundle.putString(EXTRA_CURDATE,curDate);
+        NewsListFragment fragment = new NewsListFragment();
+        fragment.setArguments(bundle);
+        fragment.mExtraAdapter = adapter;
+        return fragment;
     }
 
     private void init() {
@@ -80,19 +106,27 @@ public class NewsListFragment extends BaseFragment implements PullToRefreshView.
         mPtrNewsList.setOnRefreshListener(this);
 
         //配置RecyclerView
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        mRcvNewsList.setLayoutManager(linearLayoutManager);
+        mLinearLayoutManager = new LinearLayoutManager(getActivity());
+        mRcvNewsList.setLayoutManager(mLinearLayoutManager);
         mRcvNewsList.setHasFixedSize(true);
         mRcvNewsList.setItemAnimator(new DefaultItemAnimator());
         mNewsListAdapter = new NewsListAdapter(getActivity(), new ArrayList<News>());
         mRcvNewsList.setAdapter(mNewsListAdapter);
-        mAutoLoadListener = new AutoLoadOnScrollListener(linearLayoutManager) {
+        mAutoLoadListener = new AutoLoadOnScrollListener(mLinearLayoutManager) {
             @Override
             public void onLoadMore(int currentPage) {
                 loadBeforeNews(curDate);
             }
         };
         mRcvNewsList.addOnScrollListener(mAutoLoadListener);
+        mRcvNewsList.addOnScrollListener(new RecyclerViewListener());
+
+        if (mExtraAdapter != null) {
+            mNewsListAdapter.setAnim(false);
+            mNewsListAdapter.setmNewsList(mExtraAdapter.getmNewsList());
+            mNewsListAdapter.notifyDataSetChanged();
+            move();
+        }
 
         mLoadLatestSnackbar = Snackbar.make(mRcvNewsList, R.string.load_fail, Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.refresh, new View.OnClickListener() {
@@ -108,6 +142,54 @@ public class NewsListFragment extends BaseFragment implements PullToRefreshView.
                         loadBeforeNews(curDate);
                     }
                 });
+    }
+
+    private void move() {
+        L.d("Move Position:" + position + "," + "Scroll:" + scroll);
+        if (position < 0 || position >= mRcvNewsList.getAdapter().getItemCount()) {
+            return;
+        }
+        int firstItem = mLinearLayoutManager.findFirstVisibleItemPosition();
+        int lastItem = mLinearLayoutManager.findLastVisibleItemPosition();
+        L.d("FirstItem:"+firstItem+","+"LastItem:"+lastItem);
+
+        if (position <= firstItem) {
+            mRcvNewsList.scrollToPosition(position);
+            move = true;
+        } else if (position <= lastItem) {
+            int top = mRcvNewsList.getChildAt(position - firstItem).getTop() - scroll;
+            mRcvNewsList.scrollBy(0, top);
+            if (mOnRecyclerViewCreated != null) {
+                mOnRecyclerViewCreated.recyclerViewCreated();
+            }
+        } else {
+            mRcvNewsList.scrollToPosition(position);
+            move = true;
+        }
+    }
+
+    class RecyclerViewListener extends RecyclerView.OnScrollListener {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+
+            if (move) {
+                move = false;
+                int n = position - mLinearLayoutManager.findFirstVisibleItemPosition();
+                if (0 <= n && n < mRcvNewsList.getChildCount()) {
+                    int top = mRcvNewsList.getChildAt(n).getTop() - scroll;
+                    mRcvNewsList.smoothScrollBy(0, top);
+                }
+                if (mOnRecyclerViewCreated != null) {
+                    mOnRecyclerViewCreated.recyclerViewCreated();
+                }
+            }
+        }
     }
 
     private void loadLatestNews() {
@@ -145,6 +227,7 @@ public class NewsListFragment extends BaseFragment implements PullToRefreshView.
                         if (newsList.getStories().size() < 8) {
                             loadBeforeNews(curDate);
                         }
+
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -251,6 +334,22 @@ public class NewsListFragment extends BaseFragment implements PullToRefreshView.
 //        return imgList;
 //    }
 
+    public void setmOnRecyclerViewCreated(OnRecyclerViewCreated mOnRecyclerViewCreated) {
+        this.mOnRecyclerViewCreated = mOnRecyclerViewCreated;
+    }
+
+    public String getCurDate(){
+        return curDate;
+    }
+
+    public void setmNewsListAdapter(NewsListAdapter mNewsListAdapter) {
+        this.mNewsListAdapter = mNewsListAdapter;
+    }
+
+    public NewsListAdapter getmNewsListAdapter() {
+        return mNewsListAdapter;
+    }
+
     @Override
     public void onRefresh() {
         loadLatestNews();
@@ -262,6 +361,14 @@ public class NewsListFragment extends BaseFragment implements PullToRefreshView.
 
     public void hideProgress() {
         mPbLoading.setVisibility(View.GONE);
+    }
+
+    public RecyclerView getRecyclerView() {
+        return mRcvNewsList;
+    }
+
+    public interface OnRecyclerViewCreated {
+        void recyclerViewCreated();
     }
 
 }

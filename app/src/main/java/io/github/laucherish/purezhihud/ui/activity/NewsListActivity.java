@@ -1,18 +1,39 @@
 package io.github.laucherish.purezhihud.ui.activity;
 
-import android.app.Fragment;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.umeng.analytics.MobclickAgent;
 
+import butterknife.Bind;
 import io.github.laucherish.purezhihud.R;
 import io.github.laucherish.purezhihud.base.BaseActivity;
+import io.github.laucherish.purezhihud.base.Constant;
+import io.github.laucherish.purezhihud.ui.adapter.NewsListAdapter;
 import io.github.laucherish.purezhihud.ui.fragment.NewsListFragment;
+import io.github.laucherish.purezhihud.utils.L;
+import io.github.laucherish.purezhihud.utils.PrefUtil;
 
 public class NewsListActivity extends BaseActivity {
+
+    @Bind(R.id.fl_main)
+    ViewGroup mViewGroup;
+    @Bind(R.id.iv_main)
+    ImageView mIvMain;
+
+    private final long ANIMTION_TIME = 1000;
+    private NewsListFragment mFragment;
 
     @Override
     protected int getLayoutId() {
@@ -21,10 +42,17 @@ public class NewsListActivity extends BaseActivity {
 
     @Override
     protected void afterCreate(Bundle savedInstanceState) {
-        mSwipeBackLayout.setEdgeDp(20);
-        Fragment fragment = NewsListFragment.newInstance();
+        addFragment(0, 0, null, null);
+    }
+
+    private void addFragment(int position, int scroll, NewsListAdapter adapter, String curDate) {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.fl_container, fragment, NewsListFragment.TAG);
+        if (mFragment != null) {
+            transaction.remove(mFragment);
+        }
+        mFragment = NewsListFragment.newInstance(position, scroll, adapter, curDate);
+        mFragment.setmOnRecyclerViewCreated(new onViewCreatedListener());
+        transaction.replace(R.id.fl_container, mFragment);
         transaction.commit();
     }
 
@@ -39,6 +67,19 @@ public class NewsListActivity extends BaseActivity {
         switch (item.getItemId()) {
             case R.id.menu_action_about:
                 AboutActivity.start(this);
+                return true;
+
+            case R.id.menu_action_daynight:
+                boolean isNight = PrefUtil.isNight();
+                if (isNight) {
+                    PrefUtil.setDay();
+                    setTheme(Constant.RESOURCES_DAYTHEME);
+                } else {
+                    PrefUtil.setNight();
+                    setTheme(Constant.RESOURCES_NIGHTTHEME);
+                }
+                setDrawableCahe();
+                getState();
                 return true;
 
             default:
@@ -56,5 +97,68 @@ public class NewsListActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         MobclickAgent.onPause(this);
+    }
+
+    private void setTheme() {
+        TypedValue typedValue = new TypedValue();
+        getTheme().resolveAttribute(R.attr.myTheme, typedValue, true);
+        switch (typedValue.data) {
+
+            case Constant.DAYTHEME:
+                setTheme(Constant.RESOURCES_NIGHTTHEME);
+                break;
+            case Constant.NIGHTTHEME:
+                setTheme(Constant.RESOURCES_DAYTHEME);
+                break;
+        }
+    }
+
+    private void setDrawableCahe() {
+        //设置false清除缓存
+        mViewGroup.setDrawingCacheEnabled(false);
+        //设置true之后可以获取Bitmap
+        mViewGroup.setDrawingCacheEnabled(true);
+        mIvMain.setImageBitmap(mViewGroup.getDrawingCache());
+        mIvMain.setAlpha(1f);
+        mIvMain.setVisibility(View.VISIBLE);
+    }
+
+    public void getState() {
+        RecyclerView recyclerView = mFragment.getRecyclerView();
+        recyclerView.stopScroll();
+        if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
+            LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+            int position = layoutManager.findFirstVisibleItemPosition();
+            int scroll = recyclerView.getChildAt(0).getTop();
+            L.d("Position:" + position + ";" + "Scroll:" + scroll);
+            addFragment(position, scroll, mFragment.getmNewsListAdapter(), mFragment.getCurDate());
+        }
+    }
+
+    private void startAnimation(final View view) {
+        ValueAnimator animator = ValueAnimator.ofFloat(1f).setDuration(ANIMTION_TIME);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float n = (float) animation.getAnimatedValue();
+                view.setAlpha(1f - n);
+            }
+        });
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                mIvMain.setVisibility(View.INVISIBLE);
+            }
+        });
+        animator.start();
+    }
+
+    class onViewCreatedListener implements NewsListFragment.OnRecyclerViewCreated {
+
+        @Override
+        public void recyclerViewCreated() {
+            startAnimation(mIvMain);
+        }
     }
 }

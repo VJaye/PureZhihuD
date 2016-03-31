@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import butterknife.ButterKnife;
+import io.github.laucherish.purezhihud.utils.PrefUtil;
 import io.github.laucherish.purezhihud.utils.swipeback.SwipeBackActivity;
 import io.github.laucherish.purezhihud.utils.swipeback.SwipeBackLayout;
 
@@ -17,6 +18,7 @@ public abstract class BaseActivity extends SwipeBackActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(PrefUtil.getThemeRes());
         setContentView(getLayoutId());
         mSwipeBackLayout = getSwipeBackLayout();
         mSwipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_LEFT);

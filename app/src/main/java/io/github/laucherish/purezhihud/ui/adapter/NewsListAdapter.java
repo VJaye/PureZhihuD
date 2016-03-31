@@ -1,6 +1,7 @@
 package io.github.laucherish.purezhihud.ui.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -17,12 +18,12 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import io.github.laucherish.purezhihud.App;
 import io.github.laucherish.purezhihud.R;
 import io.github.laucherish.purezhihud.bean.News;
 import io.github.laucherish.purezhihud.db.dao.NewDao;
 import io.github.laucherish.purezhihud.ui.activity.NewsDetailActivity;
 import io.github.laucherish.purezhihud.utils.DateUtil;
+import io.github.laucherish.purezhihud.utils.PrefUtil;
 
 /**
  * Created by laucherish on 16/3/16.
@@ -36,6 +37,8 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
     private List<News> mNewsList;
     private long lastPos = -1;
     private NewDao newDao;
+    private boolean isAnim = true;
+    private boolean isNight = PrefUtil.isNight();
 
     public NewsListAdapter(Context context, List<News> newsList) {
         this.mContext = context;
@@ -46,7 +49,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
     @Override
     public int getItemViewType(int position) {
         if (position == 0) {
-            return ITEM_NEWS_DATE;
+            return ITEM_NEWS;
         }
         String currentDate = mNewsList.get(position).getDate();
         int preIndex = position - 1;
@@ -72,15 +75,16 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
             return;
         }
         if (holder instanceof NewsDateViewHolder) {
-            bindViewHolder(holder, position, news);
             NewsDateViewHolder dateHolder = (NewsDateViewHolder) holder;
             String dateFormat = null;
-            if (position == 0) {
-                dateFormat = App.getContext().getString(R.string.date_today);
-            } else {
-                dateFormat = DateUtil.formatDate(news.getDate());
-            }
+            dateFormat = DateUtil.formatDate(news.getDate());
             dateHolder.mTvNewsDate.setText(dateFormat);
+            if (!isNight) {
+                dateHolder.mTvNewsDate.setTextColor(ContextCompat.getColor(mContext, R.color.textColorSecond_Day));
+            } else {
+                dateHolder.mTvNewsDate.setTextColor(ContextCompat.getColor(mContext, R.color.textColorSecond_Night));
+            }
+            bindViewHolder(dateHolder, position, news);
         } else {
             bindViewHolder(holder, position, news);
         }
@@ -92,12 +96,35 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
         if (images != null && images.size() > 0) {
             Glide.with(mContext).load(images.get(0)).placeholder(R.drawable.ic_placeholder).into(holder.mIvNews);
         }
-        if (!news.isRead()) {
-            holder.mTvTitle.setTextColor(ContextCompat.getColor(mContext, R.color.color_unread));
+        if (!isNight) {
+            if (!news.isRead()) {
+                holder.mTvTitle.setTextColor(ContextCompat.getColor(mContext, R.color.textColorFirst_Day));
+            } else {
+                holder.mTvTitle.setTextColor(ContextCompat.getColor(mContext, R.color.textColorThird_Day));
+            }
         } else {
-            holder.mTvTitle.setTextColor(ContextCompat.getColor(mContext, R.color.color_read));
+            if (!news.isRead()) {
+                holder.mTvTitle.setTextColor(ContextCompat.getColor(mContext, R.color.textColorFirst_Night));
+            } else {
+                holder.mTvTitle.setTextColor(ContextCompat.getColor(mContext, R.color.textColorThird_Night));
+            }
         }
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+
+        holder.mCvItem.setOnClickListener(getListener(holder, news));
+
+//        if (holder instanceof NewsDateViewHolder) {
+//            ((NewsDateViewHolder) holder).mCvItem.setOnClickListener(getListener(holder, news));
+//        } else {
+//            holder.itemView.setOnClickListener(getListener(holder, news));
+//        }
+        if (isAnim) {
+            startAnimator(holder.mCvItem, position);
+        }
+    }
+
+    @NonNull
+    private View.OnClickListener getListener(final NewsViewHolder holder, final News news) {
+        return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!news.isRead()) {
@@ -112,8 +139,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
                 }
                 NewsDetailActivity.start(mContext, news);
             }
-        });
-        startAnimator(holder.mCvItem, position);
+        };
     }
 
     @Override
@@ -146,6 +172,14 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
             mNewsList.addAll(newsList);
             notifyDataSetChanged();
         }
+    }
+
+    public void setAnim(boolean anim) {
+        isAnim = anim;
+    }
+
+    public void setmNewsList(List<News> mNewsList) {
+        this.mNewsList = mNewsList;
     }
 
     public List<News> getmNewsList() {

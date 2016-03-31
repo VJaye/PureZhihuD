@@ -29,6 +29,7 @@ import io.github.laucherish.purezhihud.ui.activity.AboutActivity;
 import io.github.laucherish.purezhihud.ui.activity.NewsDetailActivity;
 import io.github.laucherish.purezhihud.utils.HtmlUtil;
 import io.github.laucherish.purezhihud.utils.L;
+import io.github.laucherish.purezhihud.utils.PrefUtil;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
@@ -139,8 +140,14 @@ public class NewsDetailFragment extends BaseFragment {
                                     .into(mIvHeader);
                             mTvTitle.setText(newsDetail.getTitle());
                             mTvSource.setText(newsDetail.getImage_source());
-                            String htmlData = HtmlUtil.createHtmlData(newsDetail);
-                            mWvNews.loadData(htmlData, HtmlUtil.MIME_TYPE, HtmlUtil.ENCODING);
+
+                            boolean isNight = PrefUtil.isNight();
+                            StringBuffer stringBuffer = HtmlUtil.handleHtml(newsDetail.getBody(),isNight);
+                            mWvNews.setDrawingCacheEnabled(true);
+                            mWvNews.loadDataWithBaseURL("file:///android_asset/", stringBuffer.toString(), "text/html", "utf-8", null);
+
+//                            String htmlData = HtmlUtil.createHtmlData(newsDetail);
+//                            mWvNews.loadData(htmlData, HtmlUtil.MIME_TYPE, HtmlUtil.ENCODING);
                             mTvLoadEmpty.setVisibility(View.GONE);
                         }
                         mTvLoadError.setVisibility(View.GONE);

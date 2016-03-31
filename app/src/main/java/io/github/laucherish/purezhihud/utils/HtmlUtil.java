@@ -93,4 +93,13 @@ public class HtmlUtil {
         final String js = HtmlUtil.createJsTag(newsDetail.getJs());
         return createHtmlData(newsDetail.getBody(), css, js);
     }
+
+    public static StringBuffer handleHtml(String body,boolean isNight) {
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append("<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"css/detail.css\" ></head>");
+        stringBuffer.append(isNight ? "<body class=\"night\">" : "<body>");
+        stringBuffer.append(body);
+        stringBuffer.append("</body></html>");
+        return stringBuffer;
+    }
 }
