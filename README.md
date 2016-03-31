@@ -2,7 +2,11 @@
 最纯净的知乎日报客户端。运行快，无广告，无社交，省流量。
 
 >* 下载地址
+>
+>酷安
+><Br>http://www.coolapk.com/apk/io.github.laucherish.purezhihud</Br>
 
+>百度
 >![扫码下载](/screenshot/purezhihudcode.jpg)
 ><Br>http://shouji.baidu.com/soft/item?docid=9101497</Br>
 

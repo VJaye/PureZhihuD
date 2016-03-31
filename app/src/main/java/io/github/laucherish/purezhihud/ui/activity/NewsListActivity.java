@@ -22,7 +22,6 @@ import io.github.laucherish.purezhihud.base.BaseActivity;
 import io.github.laucherish.purezhihud.base.Constant;
 import io.github.laucherish.purezhihud.ui.adapter.NewsListAdapter;
 import io.github.laucherish.purezhihud.ui.fragment.NewsListFragment;
-import io.github.laucherish.purezhihud.utils.L;
 import io.github.laucherish.purezhihud.utils.PrefUtil;
 
 public class NewsListActivity extends BaseActivity {
@@ -130,7 +129,6 @@ public class NewsListActivity extends BaseActivity {
             LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
             int position = layoutManager.findFirstVisibleItemPosition();
             int scroll = recyclerView.getChildAt(0).getTop();
-            L.d("Position:" + position + ";" + "Scroll:" + scroll);
             addFragment(position, scroll, mFragment.getmNewsListAdapter(), mFragment.getCurDate());
         }
     }

@@ -145,13 +145,11 @@ public class NewsListFragment extends BaseFragment implements PullToRefreshView.
     }
 
     private void move() {
-        L.d("Move Position:" + position + "," + "Scroll:" + scroll);
         if (position < 0 || position >= mRcvNewsList.getAdapter().getItemCount()) {
             return;
         }
         int firstItem = mLinearLayoutManager.findFirstVisibleItemPosition();
         int lastItem = mLinearLayoutManager.findLastVisibleItemPosition();
-        L.d("FirstItem:"+firstItem+","+"LastItem:"+lastItem);
 
         if (position <= firstItem) {
             mRcvNewsList.scrollToPosition(position);
