@@ -7,8 +7,10 @@
 ><Br>http://www.coolapk.com/apk/io.github.laucherish.purezhihud</Br>
 
 >百度
->![扫码下载](/screenshot/purezhihudcode.jpg)
-><Br>http://shouji.baidu.com/soft/item?docid=9101497</Br>
+><Br>http://shouji.baidu.com/soft/item?docid=9111891</Br>
+
+>豌豆荚
+><Br>http://www.wandoujia.com/apps/io.github.laucherish.purezhihud</Br>
 
 ## 实现的功能
 已完成
