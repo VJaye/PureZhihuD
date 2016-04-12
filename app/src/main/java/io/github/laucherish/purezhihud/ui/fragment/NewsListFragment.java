@@ -102,7 +102,6 @@ public class NewsListFragment extends BaseFragment implements PullToRefreshView.
     private void init() {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(mToolbar);
-
         mPtrNewsList.setOnRefreshListener(this);
 
         //配置RecyclerView

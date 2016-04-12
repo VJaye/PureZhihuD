@@ -7,7 +7,6 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -73,6 +72,7 @@ public class NewsListActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+
             case R.id.menu_action_about:
                 AboutActivity.start(this);
                 return true;
@@ -105,20 +105,6 @@ public class NewsListActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         MobclickAgent.onPause(this);
-    }
-
-    private void setTheme() {
-        TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(R.attr.myTheme, typedValue, true);
-        switch (typedValue.data) {
-
-            case Constant.DAYTHEME:
-                setTheme(Constant.RESOURCES_NIGHTTHEME);
-                break;
-            case Constant.NIGHTTHEME:
-                setTheme(Constant.RESOURCES_DAYTHEME);
-                break;
-        }
     }
 
     private void setDrawableCahe() {
