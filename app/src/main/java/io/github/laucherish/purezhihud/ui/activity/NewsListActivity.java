@@ -119,7 +119,7 @@ public class NewsListActivity extends BaseActivity implements View.OnTouchListen
             public void onSpringUpdate(Spring spring) {
                 // You can observe the updates in the spring
                 // state by asking its current value in onSpringUpdate.
-                float mappedValue = (float) SpringUtil.mapValueFromRangeToRange(spring.getCurrentValue(), 0, 1, 1, 0.5);
+                float mappedValue = (float) SpringUtil.mapValueFromRangeToRange(spring.getCurrentValue(), 0, 1, 1, -0.5);
                 mMenu_me.setScaleX(mappedValue);
                 mMenu_me.setScaleY(mappedValue);
             }
