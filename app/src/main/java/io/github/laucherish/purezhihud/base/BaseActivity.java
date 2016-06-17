@@ -20,6 +20,7 @@ public abstract class BaseActivity extends SwipeBackActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             scrollToFinishActivity();
+            
         }
         return true;
     }
